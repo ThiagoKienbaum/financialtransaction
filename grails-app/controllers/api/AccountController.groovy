@@ -1,8 +1,8 @@
 package api
 
 import exception.BusinessException
-import financialtransaction.accounts.Account
-import financialtransaction.accounts.AccountService
+import financialtransaction.account.Account
+import financialtransaction.account.AccountService
 import grails.validation.ValidationException
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.springframework.http.HttpStatus
