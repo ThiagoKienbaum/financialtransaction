@@ -9,9 +9,17 @@ import grails.transaction.Transactional
 class TransactionService {
 
     public Transaction save(Account account, OperationType operationType, BigDecimal amount) {
-        validateSave(account, operationType)
+        validateSave(account, amount, operationType)
 
         BigDecimal parsedAmount = operationType.isPositive() ? amount.abs() : amount.abs() * -1
+
+        if (operationType.isPositive()) {
+            account.availableCreditLimit += amount
+        } else {
+            account.availableCreditLimit -= amount
+        }
+
+        account.save(failOnError: true)
 
         Transaction transaction = new Transaction()
         transaction.account = account
@@ -22,9 +30,13 @@ class TransactionService {
         return transaction
     }
 
-    private void validateSave(Account account, OperationType operationType) {
+    private void validateSave(Account account, BigDecimal amount, OperationType operationType) {
         if (!account) throw new BusinessException("Conta não encontrada.")
 
         if (!operationType) throw new BusinessException("Tipo de transação não encontrada.")
+
+        if (operationType.isPositive()) return
+
+        if (amount > account.availableCreditLimit) throw new BusinessException("Valor da transação maior que o limite disponível")
     }
 }
