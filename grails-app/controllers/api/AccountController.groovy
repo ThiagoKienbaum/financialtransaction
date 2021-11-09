@@ -24,7 +24,8 @@ class AccountController {
 
             render(status: HttpStatus.OK, contentType: "text/json") {
                 ["account_id": account.id,
-                 "document_number": account.documentNumber]
+                 "document_number": account.documentNumber,
+                 "available_credit_limit": account.availableCreditLimit]
             }
         } catch (BusinessException businessException) {
             render(status: HttpStatus.FORBIDDEN, text: businessException.getMessage())
@@ -40,7 +41,8 @@ class AccountController {
 
             render(status: HttpStatus.CREATED, contentType: "text/json") {
                 ["account_id": account.id,
-                 "document_number": account.documentNumber]
+                 "document_number": account.documentNumber,
+                 "available_credit_limit": account.availableCreditLimit]
             }
         } catch (BusinessException businessException) {
             render(status: HttpStatus.FORBIDDEN, text: businessException.getMessage())
@@ -49,5 +51,26 @@ class AccountController {
         } catch (Exception exception) {
             render(status: HttpStatus.INTERNAL_SERVER_ERROR, text: exception.getMessage())
         }
+    }
+
+    def updateAvailableCreditLimit() {
+        try {
+            JSONObject requestJson = request.JSON
+            Account account = Account.get(requestJson."id")
+            BigDecimal availableCreditLimit = BigDecimal.valueOf(requestJson."available_credit_limit")
+
+            Account updatedAccount = accountService.updateAvailableCreditLimit(account, availableCreditLimit)
+
+            render(status: HttpStatus.OK, contentType: "text/json") {
+                ["account_id": updatedAccount.id,
+                 "document_number": updatedAccount.documentNumber,
+                 "available_credit_limit": updatedAccount.availableCreditLimit]
+            }
+        } catch (BusinessException businessException) {
+            render(status: HttpStatus.FORBIDDEN, text: businessException.getMessage())
+        } catch (Exception exception) {
+            render(status: HttpStatus.INTERNAL_SERVER_ERROR, text: exception.getMessage())
+        }
+
     }
 }

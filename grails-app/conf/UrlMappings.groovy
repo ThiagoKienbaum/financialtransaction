@@ -3,7 +3,7 @@ class UrlMappings {
 	static mappings = {
         "/api/account/$id?" {
             controller = "account"
-            action = [GET:"show", POST:"save", PUT:"update", DELETE:"delete"]
+            action = [GET:"show", POST:"save", PUT:"updateAvailableCreditLimit", DELETE:"delete"]
             format = "json"
         }
 
